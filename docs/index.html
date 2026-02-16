@@ -3,52 +3,71 @@
   <head>
     <meta charset="utf-8" />
     <title>Job Application Tracker</title>
+
     <style>
       body {
-        font-family: Arial, sans-serif;
+        font-family: Arial;
         max-width: 900px;
-        margin: 40px auto;
-        line-height: 1.6;
+        margin: auto;
+        padding: 40px;
+        background: #fafafa;
       }
-      code,
-      pre {
-        background: #f4f4f4;
-        padding: 2px 6px;
-        border-radius: 4px;
-      }
-      pre {
-        padding: 12px;
-        overflow: auto;
-      }
+
       .card {
-        border: 1px solid #ddd;
-        padding: 16px;
+        background: white;
+        padding: 20px;
+        margin: 20px 0;
         border-radius: 10px;
-        margin: 16px 0;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        color: #333;
       }
     </style>
   </head>
+
   <body>
     <h1>Job Application Tracker (CLI)</h1>
-    <p>A Python CLI tool to track job applications with JSON storage.</p>
+
+    <p>
+      Python command-line application to track job applications with persistent
+      JSON storage.
+    </p>
 
     <div class="card">
       <h2>Features</h2>
       <ul>
-        <li>Add, view, update, filter, delete applications</li>
-        <li>Stats summary + interview rate</li>
-        <li>Data saved in <code>data/applications.json</code></li>
+        <li>Add / View / Update / Delete applications</li>
+        <li>Filter by status</li>
+        <li>Stats + interview rate</li>
+        <li>JSON persistence</li>
+        <li>Search by company</li>
       </ul>
     </div>
 
     <div class="card">
-      <h2>How to Run</h2>
-      <pre><code>python3 main.py</code></pre>
+      <h2>Run Locally</h2>
+
+      <pre>python3 main.py</pre>
     </div>
 
     <div class="card">
-      <h2>Repo</h2>
-      <p>Add your GitHub repo link here.</p>
+      <h2>GitHub Repo</h2>
+
+      <a href="https://github.com/NimishaGeorge18/job-tracker">
+        github.com/NimishaGeorge18/job-tracker
+      </a>
+    </div>
+
+    <div class="card">
+      <h2>Future Plans</h2>
+      <ul>
+        <li>Flask Web App</li>
+        <li>SQLite Database</li>
+        <li>Authentication</li>
+        <li>Dashboard UI</li>
+      </ul>
     </div>
   </body>
 </html>
