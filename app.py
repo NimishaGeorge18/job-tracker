@@ -2,17 +2,12 @@ from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
 import os
 
-# ----------------------------
-# Paths / App setup
-# ----------------------------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "job_tracker.db")
 
 app = Flask(__name__)
 
-# ----------------------------
-# Database helpers
-# ----------------------------
+
 def get_db():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
@@ -21,8 +16,7 @@ def get_db():
 
 def init_db():
     conn = get_db()
-    conn.execute(
-        """
+    conn.execute("""
         CREATE TABLE IF NOT EXISTS applications (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             company TEXT NOT NULL,
@@ -32,18 +26,16 @@ def init_db():
             notes TEXT,
             created_at TEXT DEFAULT (datetime('now'))
         )
-        """
-    )
+    """)
     conn.commit()
     conn.close()
 
 
-# ✅ IMPORTANT: Run DB init on app startup (works on Render/Gunicorn too)
-init_db()
+# ✅ This runs once when the app starts (works with Gunicorn)
+with app.app_context():
+    init_db()
 
-# ----------------------------
-# Routes
-# ----------------------------
+
 @app.route("/")
 def index():
     status = request.args.get("status", "All")
@@ -95,8 +87,5 @@ def delete(app_id):
     return redirect(url_for("index"))
 
 
-# ----------------------------
-# Local dev only
-# ----------------------------
 if __name__ == "__main__":
     app.run(debug=True)
