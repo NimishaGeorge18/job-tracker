@@ -68,7 +68,15 @@
           <td>{{a["company"]}}</td>
           <td>{{a["role"]}}</td>
           <td>{{a["location"]}}</td>
-          <td>{{a["status"]}}</td>
+          <td>
+            <form method="post" action="/update-status/{{ a['id'] }}?status={{ status }}" style="margin:0;">
+              <select name="status" onchange="this.form.submit()">
+                {% for s in ["Applied","Interview","Rejected","Offer"] %}
+                <option value="{{ s }}" {% if a["status"]==s %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+              </select>
+            </form>
+          </td>
           <td>{{a["notes"] or ""}}</td>
           <td>
             <form method="post" action="/delete/{{a['id']}}" style="margin: 0">
