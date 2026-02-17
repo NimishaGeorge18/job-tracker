@@ -1,95 +1,377 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Job Tracker</title>
-    <style>
-      body {
-        font-family: Arial;
-        max-width: 950px;
-        margin: 40px auto;
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Job Tracker</title>
+
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: rgba(255, 255, 255, 0.06);
+      --card-2: rgba(255, 255, 255, 0.09);
+      --text: rgba(255, 255, 255, 0.92);
+      --muted: rgba(255, 255, 255, 0.70);
+      --line: rgba(255, 255, 255, 0.12);
+      --accent: #7c3aed;
+      --accent-2: #22c55e;
+      --danger: #ef4444;
+      --shadow: 0 20px 70px rgba(0, 0, 0, 0.45);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: radial-gradient(1200px 600px at 15% 10%, rgba(124, 58, 237, 0.35), transparent 60%),
+        radial-gradient(900px 500px at 85% 0%, rgba(34, 197, 94, 0.18), transparent 55%),
+        radial-gradient(900px 700px at 50% 100%, rgba(59, 130, 246, 0.15), transparent 60%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 18px 48px;
+    }
+
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .title h1 {
+      margin: 0 0 6px;
+      font-size: 34px;
+      letter-spacing: -0.5px;
+    }
+
+    .title p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.05));
+      color: var(--text);
+      text-decoration: none;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      transition: transform 0.12s ease, border-color 0.12s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(255, 255, 255, 0.22);
+    }
+
+    .btn .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 5px rgba(124, 58, 237, 0.20);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .pill label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    select {
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(0, 0, 0, 0.25);
+      color: var(--text);
+      padding: 8px 10px;
+      outline: none;
+    }
+
+    select:focus {
+      border-color: rgba(124, 58, 237, 0.65);
+    }
+
+    .stats {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 12px 12px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: middle;
+      font-size: 14px;
+    }
+
+    th {
+      color: rgba(255, 255, 255, 0.75);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .dot2 {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+    }
+
+    .dot-applied {
+      background: #60a5fa;
+    }
+
+    .dot-interview {
+      background: #f59e0b;
+    }
+
+    .dot-rejected {
+      background: #ef4444;
+    }
+
+    .dot-offer {
+      background: #22c55e;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .btn-sm {
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .btn-sm:hover {
+      border-color: rgba(255, 255, 255, 0.30);
+    }
+
+    .danger {
+      border-color: rgba(239, 68, 68, 0.35);
+      background: rgba(239, 68, 68, 0.12);
+    }
+
+    .danger:hover {
+      border-color: rgba(239, 68, 68, 0.55);
+    }
+
+    .empty {
+      padding: 30px 16px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    @media (max-width: 800px) {
+
+      th:nth-child(4),
+      td:nth-child(4) {
+        display: none;
       }
-      a,
-      button,
-      select {
-        padding: 8px 10px;
+
+      /* hide Location on small screens */
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
       }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 14px;
-      }
-      th,
-      td {
-        border: 1px solid #ddd;
-        padding: 10px;
-      }
-      .top {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 16px;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="top">
-      <h1>Job Application Tracker</h1>
-      <a href="/add">+ Add Application</a>
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="title">
+        <h1>Job Application Tracker</h1>
+        <p>Track applications, update status, and keep your search organized.</p>
+      </div>
+      <a class="btn" href="/add"><span class="dot"></span> Add Application</a>
     </div>
 
-    <form method="get">
-      <label>Filter: </label>
-      <select name="status" onchange="this.form.submit()">
-        {% for s in ["All","Applied","Interview","Rejected","Offer"] %}
-        <option value="{{ s }}" {% if status ==s %}selected{% endif %}>
-          {{ s }}
-        </option>
-        {% endfor %}
-      </select>
-    </form>
+    <div class="card">
+      <div class="toolbar">
+        <form method="get" class="pill">
+          <label for="status">Filter</label>
+          <select id="status" name="status" onchange="this.form.submit()">
+            {% for s in ["All","Applied","Interview","Rejected","Offer"] %}
+            <option value="{{ s }}" {% if status==s %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+          </select>
+        </form>
 
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Company</th>
-          <th>Role</th>
-          <th>Location</th>
-          <th>Status</th>
-          <th>Notes</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for a in apps %}
-        <tr>
-          <td>{{a["id"]}}</td>
-          <td>{{a["company"]}}</td>
-          <td>{{a["role"]}}</td>
-          <td>{{a["location"]}}</td>
-          <td>
-            <form method="post" action="/update-status/{{ a['id'] }}?status={{ status }}" style="margin:0;">
-              <select name="status" onchange="this.form.submit()">
-                {% for s in ["Applied","Interview","Rejected","Offer"] %}
-                <option value="{{ s }}" {% if a["status"]==s %}selected{% endif %}>{{ s }}</option>
-                {% endfor %}
-              </select>
-            </form>
-          </td>
-          <td>{{a["notes"] or ""}}</td>
-          <td>
-            <form method="post" action="/delete/{{a['id']}}" style="margin: 0">
-              <button type="submit">Delete</button>
-            </form>
-          </td>
-        </tr>
-        {% endfor %} {% if apps|length == 0 %}
-        <tr>
-          <td colspan="7">(No applications yet)</td>
-        </tr>
-        {% endif %}
-      </tbody>
-    </table>
-  </body>
+        <div class="stats">
+          <span class="badge">Showing: <b style="color: var(--text);">{{ status }}</b></span>
+          <span class="badge">Total: <b style="color: var(--text);">{{ apps|length }}</b></span>
+        </div>
+      </div>
+
+      <div style="overflow:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:70px;">ID</th>
+              <th>Company</th>
+              <th>Role</th>
+              <th>Location</th>
+              <th style="width:210px;">Status</th>
+              <th>Notes</th>
+              <th style="width:140px;">Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% if apps|length == 0 %}
+            <tr>
+              <td colspan="7" class="empty">(No applications yet)</td>
+            </tr>
+            {% endif %}
+
+            {% for a in apps %}
+            <tr>
+              <td class="muted">{{ a["id"] }}</td>
+              <td><b>{{ a["company"] }}</b></td>
+              <td>{{ a["role"] }}</td>
+              <td class="muted">{{ a["location"] }}</td>
+
+              <!-- Status dropdown (updates on dashboard) -->
+              <td>
+                <form method="post" action="/update-status/{{ a['id'] }}?status={{ status }}" style="margin:0;">
+                  <select name="status" onchange="this.form.submit()">
+                    {% for s in ["Applied","Interview","Rejected","Offer"] %}
+                    <option value="{{ s }}" {% if a["status"]==s %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                  </select>
+
+                  <!-- optional status chip (pretty) -->
+                  <div style="margin-top:8px;">
+                    {% set st = a["status"] %}
+                    <span class="status">
+                      <span class="dot2
+                          {% if st == 'Applied' %}dot-applied{% endif %}
+                          {% if st == 'Interview' %}dot-interview{% endif %}
+                          {% if st == 'Rejected' %}dot-rejected{% endif %}
+                          {% if st == 'Offer' %}dot-offer{% endif %}
+                        "></span>
+                      {{ st }}
+                    </span>
+                  </div>
+                </form>
+              </td>
+
+              <td class="muted">{{ a["notes"] or "" }}</td>
+
+              <td>
+                <div class="actions">
+                  <form method="post" action="/delete/{{ a['id'] }}" style="margin:0;">
+                    <button class="btn-sm danger" type="submit">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="margin-top:14px; color: var(--muted); font-size:12px;">
+      Tip: Render free tier may “sleep” when inactive — first load can take a bit.
+    </div>
+  </div>
+</body>
+
 </html>
