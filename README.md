@@ -22,3 +22,4 @@ A simple CLI tool to track job applications. Add applications, update status, fi
 ```bash
 python3 main.py
 ```
+Live Demo: https://job-tracker-yooq.onrender.com
