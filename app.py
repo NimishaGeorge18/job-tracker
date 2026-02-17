@@ -86,6 +86,22 @@ def delete(app_id):
     conn.close()
     return redirect(url_for("index"))
 
+@app.route("/update-status/<int:app_id>", methods=["POST"])
+def update_status(app_id):
+    new_status = request.form["status"].strip()
+
+    conn = get_db()
+    conn.execute(
+        "UPDATE applications SET status = ? WHERE id = ?",
+        (new_status, app_id),
+    )
+    conn.commit()
+    conn.close()
+
+    # Keep the filter after updating
+    current_filter = request.args.get("status", "All")
+    return redirect(url_for("index", status=current_filter))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
