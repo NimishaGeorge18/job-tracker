@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Job Tracker</title>
+    <style>
+      body {
+        font-family: Arial;
+        max-width: 950px;
+        margin: 40px auto;
+      }
+      a,
+      button,
+      select {
+        padding: 8px 10px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 14px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 10px;
+      }
+      .top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top">
+      <h1>Job Application Tracker</h1>
+      <a href="/add">+ Add Application</a>
+    </div>
+
+    <form method="get">
+      <label>Filter: </label>
+      <select name="status" onchange="this.form.submit()">
+        {% for s in ["All","Applied","Interview","Rejected","Offer"] %}
+        <option value="{{ s }}" {% if status ==s %}selected{% endif %}>
+          {{ s }}
+        </option>
+        {% endfor %}
+      </select>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Company</th>
+          <th>Role</th>
+          <th>Location</th>
+          <th>Status</th>
+          <th>Notes</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in apps %}
+        <tr>
+          <td>{{a["id"]}}</td>
+          <td>{{a["company"]}}</td>
+          <td>{{a["role"]}}</td>
+          <td>{{a["location"]}}</td>
+          <td>{{a["status"]}}</td>
+          <td>{{a["notes"] or ""}}</td>
+          <td>
+            <form method="post" action="/delete/{{a['id']}}" style="margin: 0">
+              <button type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %} {% if apps|length == 0 %}
+        <tr>
+          <td colspan="7">(No applications yet)</td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </body>
+</html>
