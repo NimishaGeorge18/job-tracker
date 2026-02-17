@@ -1,11 +1,18 @@
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
-from pathlib import Path
+import os
+
+# ----------------------------
+# Paths / App setup
+# ----------------------------
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "job_tracker.db")
 
 app = Flask(__name__)
-DB_PATH = Path("job_tracker.db")
 
-
+# ----------------------------
+# Database helpers
+# ----------------------------
 def get_db():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
@@ -14,7 +21,8 @@ def get_db():
 
 def init_db():
     conn = get_db()
-    conn.execute("""
+    conn.execute(
+        """
         CREATE TABLE IF NOT EXISTS applications (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             company TEXT NOT NULL,
@@ -24,11 +32,18 @@ def init_db():
             notes TEXT,
             created_at TEXT DEFAULT (datetime('now'))
         )
-    """)
+        """
+    )
     conn.commit()
     conn.close()
 
 
+# ✅ IMPORTANT: Run DB init on app startup (works on Render/Gunicorn too)
+init_db()
+
+# ----------------------------
+# Routes
+# ----------------------------
 @app.route("/")
 def index():
     status = request.args.get("status", "All")
@@ -39,7 +54,7 @@ def index():
     else:
         rows = conn.execute(
             "SELECT * FROM applications WHERE status = ? ORDER BY id DESC",
-            (status,)
+            (status,),
         ).fetchall()
 
     conn.close()
@@ -57,7 +72,10 @@ def add():
 
         conn = get_db()
         conn.execute(
-            "INSERT INTO applications (company, role, location, status, notes) VALUES (?, ?, ?, ?, ?)",
+            """
+            INSERT INTO applications (company, role, location, status, notes)
+            VALUES (?, ?, ?, ?, ?)
+            """,
             (company, role, location, status, notes),
         )
         conn.commit()
@@ -77,6 +95,8 @@ def delete(app_id):
     return redirect(url_for("index"))
 
 
+# ----------------------------
+# Local dev only
+# ----------------------------
 if __name__ == "__main__":
-    init_db()
     app.run(debug=True)
